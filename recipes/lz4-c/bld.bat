@@ -6,18 +6,17 @@ if "%ARCH%"=="32" (
     set ADDITIONALPARAM=""
 ) else (
     set PLATFORM=x64
-    set ADDITIONALPARAM=/p:LibraryPath="C:\Program Files\Microsoft SDKs\Windows\v7.1\lib\x64;c:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\lib\amd64;C:\Program Files (x86)\Microsoft Visual Studio 10.0\;C:\Program Files (x86)\Microsoft Visual Studio 10.0\lib\amd64;"
 )
 set CONFIGURATION=Release
 set VSPROJ_DIR=%SRC_DIR%\visual\VS2010
 set BUILD_DIR=%VSPROJ_DIR%\bin\%PLATFORM%_%CONFIGURATION%
 msbuild.exe /m ^
-    /p:PlatformToolset=v140 ^
+    /p:Configuration=%CONFIGURATION% ^
     /p:Platform=%PLATFORM% ^
-    /p:Configuration=%CONFIGURATION% %ADDITIONALPARAM% ^
-    /p:AdditionalDependencies=legacy_stdio_definitions.lib ^
-    /t:Clean,Build ^
+    /p:PlatformToolset=v140 ^
+    /t:Build ^
     %VSPROJ_DIR%\lz4.sln 
+if errorlevel 1 exit 1
 
 :: Test.
 cd %BUILD_DIR%
