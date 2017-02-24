@@ -1,0 +1,68 @@
+{% set name = "pystan" %}
+{% set version = "2.8.0.2" %}
+{% set sha256sum = "5e38e4cc7a71c299491eb7a4d7a82fed1fe44d6464481a65eac0c42c906a0cf7" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  sha256: {{ sha256sum }}
+  patches:
+    - patches/0001-Backport-windows-build-flags.patch
+    - patches/0002-Disable-boost-quadmath.patch
+    - patches/0003-Do-not-include-msinttypes-on-vc10-or-later.patch
+
+build:
+  number: 0
+  # Skip 32-bit builds for now.
+  skip: True  # [not x86_64]
+  # For now, due to Travis time limit, we restrict the build matrix.
+  skip: True  # [osx and (py36 or np!=111)]
+  features:
+    - vc9   # [win and py27]
+    - vc14  # [win and py35]
+    - vc14  # [win and py36]
+
+# Numpy supported is >=1.7.
+requirements:
+  build:
+    - toolchain   # [unix]
+    - gcc         # [linux]
+    - msinttypes  # [win and py27]
+    - python
+    - setuptools
+    - numpy x.x
+    - cython >=0.22,!=0.25.1
+
+  run:
+    # Pystan compiles user's stan models on the fly.
+    - toolchain   # [unix]
+    - gcc         # [linux]
+    - msinttypes  # [win and py27]
+    - python
+    - numpy x.x
+    - cython >=0.22,!=0.25.1
+    - matplotlib
+
+test:
+  imports:
+    - pystan
+
+about:
+  home: http://mc-stan.org/interfaces/pystan.html
+  license: GPLv3
+  license_file: LICENSE
+  summary: Python interface to Stan, a package for Bayesian inference
+  description: |
+    PyStan provides a Python interface to Stan, a package for Bayesian
+    inference using the No-U-Turn sampler, a variant of Hamiltonian Monte
+    Carlo.
+  doc_url: https://pystan.readthedocs.org/
+  dev_url: https://github.com/stan-dev/pystan
+
+extra:
+  recipe-maintainers:
+    - rolando
