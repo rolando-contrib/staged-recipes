@@ -1,0 +1,133 @@
+From 1c82682232e36d2f3714b693afa727603f7041a7 Mon Sep 17 00:00:00 2001
+From: Rolando Espinoza <rndmax84@gmail.com>
+Date: Wed, 8 Mar 2017 03:19:29 -0300
+Subject: [PATCH] Windows-Eigen compatibility
+
+---
+ stan/prophet_linear_growth.stan   | 22 ++++++++++++++--------
+ stan/prophet_logistic_growth.stan | 25 +++++++++++++++----------
+ 2 files changed, 29 insertions(+), 18 deletions(-)
+
+diff --git a/stan/prophet_linear_growth.stan b/stan/prophet_linear_growth.stan
+index a94ea92..0c3e80d 100644
+--- a/stan/prophet_linear_growth.stan
++++ b/stan/prophet_linear_growth.stan
+@@ -8,12 +8,12 @@
+ data {
+   int T;                                // Sample size
+   int<lower=1> K;                       // Number of seasonal vectors
+-  vector[T] t;                            // Day
+-  vector[T] y;                            // Time-series
++  real t[T];                            // Day
++  real y[T];                            // Time-series
+   int S;                                // Number of split points
+-  matrix[T, S] A;                   // Split indicators
++  real A[T, S];                   // Split indicators
+   int s_indx[S];                 // Index of split points
+-  matrix[T,K] X;                // season vectors
++  real X[T,K];                // season vectors
+   real<lower=0> sigma;              // scale on seasonality prior
+   real<lower=0> tau;                  // scale on changepoints prior
+ }
+@@ -21,20 +21,23 @@ data {
+ parameters {
+   real k;                            // Base growth rate
+   real m;                            // offset
+-  vector[S] delta;                       // Rate adjustments
++  real delta[S];                       // Rate adjustments
+   real<lower=0> sigma_obs;               // Observation noise (incl. seasonal variation)
+-  vector[K] beta;                    // seasonal vector
++  real beta[K];                    // seasonal vector
+ }
+ 
+ transformed parameters {
+-  vector[S] gamma;                  // adjusted offsets, for piecewise continuity
++  real gamma[S];                  // adjusted offsets, for piecewise continuity
+ 
+   for (i in 1:S) {
+     gamma[i] = -t[s_indx[i]] * delta[i];
+   }
++
+ }
+ 
+ model {
++  real Y[T];
++
+   //priors
+   k ~ normal(0, 5);
+   m ~ normal(0, 5);
+@@ -43,5 +46,8 @@ model {
+   beta ~ normal(0, sigma);
+ 
+   // Likelihood
+-  y ~ normal((k + A * delta) .* t + (m + A * gamma) + X * beta, sigma_obs);
++  for (i in 1:T) {
++    Y[i] = (dot_product(A[i], delta) + k) * t[i] + (dot_product(A[i], gamma) + m) + dot_product(X[i], beta);
++  }
++  y ~ normal(Y, sigma_obs);
+ }
+diff --git a/stan/prophet_logistic_growth.stan b/stan/prophet_logistic_growth.stan
+index 8d04dfb..1383eb4 100644
+--- a/stan/prophet_logistic_growth.stan
++++ b/stan/prophet_logistic_growth.stan
+@@ -8,13 +8,13 @@
+ data {
+   int T;                                // Sample size
+   int<lower=1> K;                       // Number of seasonal vectors
+-  vector[T] t;                            // Day
+-  vector[T] cap;                          // Capacities
+-  vector[T] y;                            // Time-series
++  real t[T];                            // Day
++  real cap[T];                          // Capacities
++  real y[T];                            // Time-series
+   int S;                                // Number of split points
+-  matrix[T, S] A;                   // Split indicators
++  real A[T, S];                   // Split indicators
+   int s_indx[S];                 // Index of split points
+-  matrix[T,K] X;                    // season vectors
++  real X[T,K];                    // season vectors
+   real<lower=0> sigma;              // scale on seasonality prior
+   real<lower=0> tau;                  // scale on changepoints prior
+ }
+@@ -32,15 +32,15 @@ transformed data {
+ parameters {
+   real k;                            // Base growth rate
+   real m;                            // offset
+-  vector[S] delta;                       // Rate adjustments
++  real delta[S];                       // Rate adjustments
+   real<lower=0> sigma_obs;               // Observation noise (incl. seasonal variation)
+-  vector[K] beta;                    // seasonal vector
++  real beta[K];                    // seasonal vector
+ }
+ 
+ 
+ transformed parameters {
+-  vector[S] gamma;                  // adjusted offsets, for piecewise continuity
+-  vector[S + 1] k_s;                 // actual rate in each segment
++  real gamma[S];                  // adjusted offsets, for piecewise continuity
++  real k_s[S + 1];                 // actual rate in each segment
+   real m_pr;
+ 
+   // Compute the rate in each segment
+@@ -58,6 +58,8 @@ transformed parameters {
+ }
+ 
+ model {
++  real Y[T];
++
+   //priors
+   k ~ normal(0, 5);
+   m ~ normal(0, 5);
+@@ -66,5 +68,8 @@ model {
+   beta ~ normal(0, sigma);
+ 
+   // Likelihood
+-  y ~ normal(cap ./ (1 + exp(-(k + A * delta) .* (t - (m + A * gamma)))) + X * beta, sigma_obs);
++  for (i in 1:T) {
++    Y[i] = cap[i] / (1 + exp(-(k + dot_product(A[i], delta)) * (t[i] - (m + dot_product(A[i], gamma))))) + dot_product(X[i], beta);
++  }
++  y ~ normal(Y, sigma_obs);
+ }
+-- 
+2.6.2
+
