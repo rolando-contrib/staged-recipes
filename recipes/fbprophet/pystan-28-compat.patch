@@ -1,0 +1,51 @@
+diff --git a/stan/prophet_linear_growth.stan b/stan/prophet_linear_growth.stan
+index a94ea92..bc16501 100644
+--- a/stan/prophet_linear_growth.stan
++++ b/stan/prophet_linear_growth.stan
+@@ -30,7 +30,7 @@ transformed parameters {
+   vector[S] gamma;                  // adjusted offsets, for piecewise continuity
+ 
+   for (i in 1:S) {
+-    gamma[i] = -t[s_indx[i]] * delta[i];
++    gamma[i] <- -t[s_indx[i]] * delta[i];
+   }
+ }
+ 
+diff --git a/stan/prophet_logistic_growth.stan b/stan/prophet_logistic_growth.stan
+index 8d04dfb..12189e7 100644
+--- a/stan/prophet_logistic_growth.stan
++++ b/stan/prophet_logistic_growth.stan
+@@ -23,9 +23,9 @@ data {
+ transformed data {
+   int s_ext[S + 1];  // Segment endpoints
+   for (j in 1:S) {
+-    s_ext[j] = s_indx[j];
++    s_ext[j] <- s_indx[j];
+   }
+-  s_ext[S + 1] = T + 1;  // Used for the m_adj loop below.
++  s_ext[S + 1] <- T + 1;  // Used for the m_adj loop below.
+ }
+ 
+ 
+@@ -44,16 +44,16 @@ transformed parameters {
+   real m_pr;
+ 
+   // Compute the rate in each segment
+-  k_s[1] = k;
++  k_s[1] <- k;
+   for (i in 1:S) {
+-    k_s[i + 1] = k_s[i] + delta[i];
++    k_s[i + 1] <- k_s[i] + delta[i];
+   }
+ 
+   // Piecewise offsets
+-  m_pr = m; // The offset in the previous segment
++  m_pr <- m; // The offset in the previous segment
+   for (i in 1:S) {
+-    gamma[i] = (t[s_indx[i]] - m_pr) * (1 - k_s[i] / k_s[i + 1]);
+-    m_pr = m_pr + gamma[i];  // update for the next segment
++    gamma[i] <- (t[s_indx[i]] - m_pr) * (1 - k_s[i] / k_s[i + 1]);
++    m_pr <- m_pr + gamma[i];  // update for the next segment
+   }
+ }
+ 
