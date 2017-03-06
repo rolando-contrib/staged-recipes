@@ -25,7 +25,9 @@ build:
 
 requirements:
   build:
-    - msinttypes  # [win and py27]
+    - msinttypes        # [win and py27]
+    - boost-cpp 1.63.*  # [win]
+    - eigen 3.2.*       # [win]
     - python
     - setuptools
     - numpy >=1.7

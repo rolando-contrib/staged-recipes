@@ -3,7 +3,12 @@ set "STAN_VER=%PKG_VERSION:~0,-2%"
 pushd pystan\\stan\\lib\\stan_math_%STAN_VER%
 if errorlevel 1 exit 1
 
+:: Unneeded files.
 rd /q /s doc doxygen make test lib\\cpplist_4.45 lib\\gtest_1.7.0
+if errorlevel 1 exit 1
+
+:: Removed bundled libs as we prefer installed ones.
+rd /q /s lib\\boost_1.62.0 lib\\eigen_3.2.9
 if errorlevel 1 exit 1
 
 popd
