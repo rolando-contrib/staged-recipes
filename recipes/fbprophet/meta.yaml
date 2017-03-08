@@ -1,6 +1,6 @@
 {% set name = "fbprophet" %}
-{% set version = "0.1.post1" %}
-{% set sha256sum = "b70808a1c58ec9883e07bf92deed51b44f572064057a35ee8409bca195ed41af" %}
+{% set version = "0.1.post6" %}
+{% set sha256sum = "" %}
 
 package:
   name: {{ name }}
@@ -8,10 +8,9 @@ package:
 
 source:
   fn: {{ name }}-{{ version }}.tar.gz
-  url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  #url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
+  url: https://anaconda.org/rolando/{{ name }}/{{ version }}/download/{{ name }}-{{ version }}.tar.gz
   sha256: {{ sha256sum }}
-  patches:
-    - patches/0001-Windows-Eigen-compatibility.patch
 
 build:
   number: 0
@@ -20,12 +19,15 @@ build:
     - vc9   # [win and py27]
     - vc14  # [win and py35]
     - vc14  # [win and py36]
-  # Avoid to mangle model (.pkl) files.
-  detect_binary_files_with_prefix: False
-  ignore_prefix_files: True
+  binary_has_prefix_files:
+    - Lib/site-packages/fbprophet/stan_models/linear_growth.pkl            # [win]
+    - Lib/site-packages/fbprophet/stan_models/logistic_growth.pkl          # [win]
+    - lib/python*/site-packages/fbprophet/stan_models/linear_growth.pkl    # [unix]
+    - lib/python*/site-packages/fbprophet/stan_models/logistic_growth.pkl  # [unix]
 
 requirements:
   build:
+    - toolchain  # [unix]
     - python
     - setuptools
     - pystan >=2.8
@@ -42,6 +44,10 @@ requirements:
     - numpy
     - pandas
     - matplotlib
+
+test:
+  requires:
+    - pytest
 
 about:
   home: https://facebookincubator.github.io/
