@@ -1,5 +1,5 @@
 {% set name = "fbprophet" %}
-{% set version = "0.1.post6" %}
+{% set version = "0.1.1.pre1" %}
 {% set sha256sum = "" %}
 
 package:
@@ -9,7 +9,7 @@ package:
 source:
   fn: {{ name }}-{{ version }}.tar.gz
   #url: https://pypi.io/packages/source/{{ name[0] }}/{{ name }}/{{ name }}-{{ version }}.tar.gz
-  url: https://anaconda.org/rolando/{{ name }}/{{ version }}/download/{{ name }}-{{ version }}.tar.gz
+  url: https://github.com/facebookincubator/prophet/archive/e33e7c4b37054ae512c384fc08e12051c238b91a.zip
   sha256: {{ sha256sum }}
 
 build:
