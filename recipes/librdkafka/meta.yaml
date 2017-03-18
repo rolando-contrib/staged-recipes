@@ -50,10 +50,10 @@ test:
 
     - if not exist %LIBRARY_INC%\\librdkafka\\rdkafka.h exit 1  # [win]
     - if not exist %LIBRARY_INC%\\librdkafka\\rdkafkacpp.h exit 1   # [win]
-    - if not exist %LIBRARY_LIB%\\librdkafka.dll exit 1  # [win]
-    - if not exist %LIBRARY_LIB%\\librdkafka.lib exit 1  # [win]
-    - if not exist %LIBRARY_LIB%\\librdkafkacpp.dll exit 1  # [win]
-    - if not exist %LIBRARY_LIB%\\librdkafkacpp.lib exit 1  # [win]
+    - if not exist %LIBRARY_LIB%\\rdkafka.dll exit 1  # [win]
+    - if not exist %LIBRARY_LIB%\\rdkafka.lib exit 1  # [win]
+    - if not exist %LIBRARY_LIB%\\rdkafkacpp.dll exit 1  # [win]
+    - if not exist %LIBRARY_LIB%\\rdkafkacpp.lib exit 1  # [win]
 
     - pkg-config --cflags --libs rdkafka  # [unix]
     - pkg-config --cflags --libs rdkafka++  # [unix]
