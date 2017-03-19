@@ -1,4 +1,4 @@
-From 3c3719809968f8b4ca9c32a5e5a5b2905cdfed20 Mon Sep 17 00:00:00 2001
+From 7faf67b7907b843357d973416d05d4aef8ee564e Mon Sep 17 00:00:00 2001
 From: Rolando Espinoza <rndmax84@gmail.com>
 Date: Sun, 19 Mar 2017 02:13:26 -0300
 Subject: [PATCH 2/2] use list instead of generator
