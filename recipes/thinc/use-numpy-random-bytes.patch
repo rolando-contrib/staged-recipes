@@ -1,0 +1,30 @@
+From 474920f068b7851c695ad573f7e5447fb68c978f Mon Sep 17 00:00:00 2001
+From: Rolando Espinoza <rndmax84@gmail.com>
+Date: Sun, 19 Mar 2017 01:26:55 -0300
+Subject: [PATCH] use numpy random bytes
+
+---
+ thinc/neural/ops.pyx | 7 +------
+ 1 file changed, 1 insertion(+), 6 deletions(-)
+
+diff --git a/thinc/neural/ops.pyx b/thinc/neural/ops.pyx
+index 18b518d..718c382 100644
+--- a/thinc/neural/ops.pyx
++++ b/thinc/neural/ops.pyx
+@@ -278,12 +278,7 @@ class NumpyOps(Ops):
+                 workon[i] += to_add[i]
+ 
+     def random_bytes(self, n):
+-        cdef bytes output = b'\0' * n
+-        cdef unsigned char* arr = <unsigned char*>output
+-        fill_random_bytes(arr, n)
+-        return output
+- 
+-
++        return self.xp.random.bytes(n)
+ 
+ class CupyOps(Ops):
+     device = 'gpu'
+-- 
+2.6.2
+

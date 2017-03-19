@@ -1,0 +1,32 @@
+From 3c3719809968f8b4ca9c32a5e5a5b2905cdfed20 Mon Sep 17 00:00:00 2001
+From: Rolando Espinoza <rndmax84@gmail.com>
+Date: Sun, 19 Mar 2017 02:13:26 -0300
+Subject: [PATCH 2/2] use list instead of generator
+
+to debug failure as pytest shows the repr of the object
+---
+ thinc/tests/unit/test_ops.py | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/thinc/tests/unit/test_ops.py b/thinc/tests/unit/test_ops.py
+index 2070604..66af667 100644
+--- a/thinc/tests/unit/test_ops.py
++++ b/thinc/tests/unit/test_ops.py
+@@ -56,9 +56,11 @@ def test_backprop_seq2col_window_one(ops):
+ 
+ 
+ def test_random_bytes(ops):
+-    byte_str = ops.random_bytes(10)
+-    assert len(byte_str) == 10
+-    assert not all(b == byte_str[0] for b in byte_str)
++    n = 10
++    byte_str = ops.random_bytes(n)
++    assert len(byte_str) == n
++    assert byte_str != ops.random_bytes(n)
++    assert not all([b == byte_str[0] for b in byte_str])
+ 
+ 
+ @settings(max_examples=MAX_EXAMPLES)
+-- 
+2.6.2
+

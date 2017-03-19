@@ -1,0 +1,24 @@
+diff --git a/setup.py b/setup.py
+index 3dad6a0..021a956 100644
+--- a/setup.py
++++ b/setup.py
+@@ -160,7 +160,6 @@ def setup_package():
+                 'cytoolz>=0.8,<0.9',
+                 'plac>=0.9.6,<1.0.0',
+                 'six>=1.10.0,<2.0.0',
+-                'flexmock'
+             ],
+             classifiers=[
+                 'Development Status :: 5 - Production/Stable',
+diff --git a/thinc/tests/unit/test_model.py b/thinc/tests/unit/test_model.py
+index e3d0bbd..2e85dec 100644
+--- a/thinc/tests/unit/test_model.py
++++ b/thinc/tests/unit/test_model.py
+@@ -1,7 +1,6 @@
+ # encoding: utf8
+ from __future__ import unicode_literals
+ import pytest
+-from flexmock import flexmock
+ from hypothesis import given, strategies
+ 
+ from ...neural._classes import model as base
