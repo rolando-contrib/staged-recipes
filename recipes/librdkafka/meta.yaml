@@ -1,0 +1,73 @@
+{% set name = "librdkafka" %}
+{% set version = "0.9.4" %}
+{% set sha256 = "5007ad20a6753f709803e72c5f2c09483dcbce0f16b94b17cf677fb3e6045907" %}
+{% set build = 0 %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  fn: {{ name }}-{{ version }}.tar.gz
+  url: https://github.com/edenhill/{{ name }}/archive/v{{ version }}.tar.gz
+  sha256: {{ sha256 }}
+  patches:
+    - disable-nuget.patch  # [win]
+
+build:
+  number: {{ build }}
+  skip: True  # [win and py!=35]
+  features:
+    - vc14  # [win and py>=35]
+
+requirements:
+  build:
+    - toolchain  # [unix]
+    - python  # [win]
+    - zlib 1.2.*
+    - openssl 1.0.*
+    - libgsasl 1.8.* # [linux]
+    - lz4-c 1.7.*
+  run:
+    - zlib 1.2.*
+    - openssl 1.0.*
+    - libgsasl 1.8.* # [linux]
+    - lz4-c 1.7.*
+
+test:
+  requires:
+    - pkg-config  # [unix]
+    - python      # [win]
+
+  commands:
+    - test -f ${PREFIX}/include/librdkafka/rdkafka.h  # [unix]
+    - test -f ${PREFIX}/include/librdkafka/rdkafkacpp.h  # [unix]
+    - test -f ${PREFIX}/lib/librdkafka++.a  # [unix]
+    - test -f ${PREFIX}/lib/librdkafka.so  # [linux]
+    - test -f ${PREFIX}/lib/librdkafka++.so  # [linux]
+    - test -f ${PREFIX}/lib/librdkafka.dylib  # [osx]
+    - test -f ${PREFIX}/lib/librdkafka++.dylib  # [osx]
+
+    - if not exist %LIBRARY_INC%\\librdkafka\\rdkafka.h exit 1  # [win]
+    - if not exist %LIBRARY_INC%\\librdkafka\\rdkafkacpp.h exit 1   # [win]
+    - if not exist %LIBRARY_LIB%\\librdkafka.dll exit 1  # [win]
+    - if not exist %LIBRARY_LIB%\\librdkafka.lib exit 1  # [win]
+    - if not exist %LIBRARY_LIB%\\librdkafkacpp.dll exit 1  # [win]
+    - if not exist %LIBRARY_LIB%\\librdkafkacpp.lib exit 1  # [win]
+
+    - pkg-config --cflags --libs rdkafka  # [unix]
+    - pkg-config --cflags --libs rdkafka++  # [unix]
+
+    - conda inspect linkages {{ name }}  # [unix]
+    - conda inspect objects {{ name }}   # [osx]
+
+about:
+  home: https://github.com/edenhill/librdkafka
+  license: BSD 2-clause
+  license_family: BSD
+  license_file: LICENSE
+  summary: 'The Apache Kafka C/C++ client library'
+
+extra:
+  recipe-maintainers:
+    - kwilcox
