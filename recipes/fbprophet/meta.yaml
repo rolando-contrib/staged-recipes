@@ -17,6 +17,7 @@ source:
 build:
   number: {{ build_num }}
   script: python setup.py install --single-version-externally-managed --record=record.txt
+  skip: True  # [win]
 
 
 requirements:
