@@ -25,10 +25,10 @@ msbuild %SLNFILE% ^
 if errorlevel 1 exit 1
 
 :: Install
-for %%ext in (dll lib pdb) do (
-  copy /Y %OUTDIR%\librdkafka.%%ext %LIBRARY_LIB%\rdkafka.%%ext
+for %%x in (dll lib pdb) do (
+  copy /Y %OUTDIR%\librdkafka.%%x %LIBRARY_LIB%\rdkafka.%%x
   if errorlevel 1 exit 1
-  copy /Y %OUTDIR%\librdkafkacpp.%%ext %LIBRARY_LIB%\rdkafkacpp.%%ext
+  copy /Y %OUTDIR%\librdkafkacpp.%%x %LIBRARY_LIB%\rdkafkacpp.%%x
   if errorlevel 1 exit 1
 )
 
