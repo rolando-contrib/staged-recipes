@@ -1,0 +1,28 @@
+From fc348a5622f34cf8c9053f48799825b8e31f3b3d Mon Sep 17 00:00:00 2001
+From: Rolando Espinoza <rndmax84@gmail.com>
+Date: Mon, 27 Mar 2017 16:45:01 -0300
+Subject: [PATCH 1/2] MS compiler work arounds.
+
+---
+ confluent_kafka/src/confluent_kafka.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/confluent_kafka/src/confluent_kafka.c b/confluent_kafka/src/confluent_kafka.c
+index 1d087cd..5cf3cbd 100644
+--- a/confluent_kafka/src/confluent_kafka.c
++++ b/confluent_kafka/src/confluent_kafka.c
+@@ -18,6 +18,11 @@
+ 
+ #include <stdarg.h>
+ 
++#ifdef _MSC_VER
++#define snprintf _snprintf
++#define vsnprintf _vsnprintf
++#define strcasecmp _stricmp
++#endif/* _MSC_VER */
+ 
+ /**
+  * @brief KNOWN ISSUES
+-- 
+2.6.2
+
