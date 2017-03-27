@@ -38,12 +38,15 @@ requirements:
 
 test:
   imports:
-    - confluent_kafka
-    - confluent_kafka.avro
+    #- confluent_kafka
+    #- confluent_kafka.avro
 
   commands:
     - conda inspect linkages {{ pkgname }}  # [unix]
     - conda inspect objects {{ pkgname }}   # [osx]
+    - dir /s /b  %LIBRARY_PREFIX%  #[win]
+    - python -c "import os; print(os.getenv('PATH'))"
+    - python -c "import sys; print(sys.path)"
 
 about:
   home: https://github.com/confluentinc/confluent-kafka-python
