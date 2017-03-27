@@ -2,6 +2,6 @@
 set -ex
 
 export CFLAGS="${CFLAGS} -I${PREFIX}/include"
-export LDFLAGS="${LDFLAGS} -I${PREFIX}/lib"
+export LDFLAGS="${LDFLAGS} -L${PREFIX}/lib"
 
 python setup.py install --single-version-externally-managed --record=record.txt
