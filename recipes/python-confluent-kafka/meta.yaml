@@ -44,9 +44,12 @@ test:
   commands:
     - conda inspect linkages {{ pkgname }}  # [unix]
     - conda inspect objects {{ pkgname }}   # [osx]
+    - set "DUMPBIN=%VS140COMNTOOLS%\\..\\..\\VC\\bin\\dumpbin.exe"  # [win]
+    - %DUMPBIN% /DEPENDENTS %SP_DIR%\\confluent_kafka\\cimpl.*.pyd  # [win]
     - dir /s /b  %LIBRARY_PREFIX%  #[win]
     - python -c "import os; print(os.getenv('PATH'))"
     - python -c "import sys; print(sys.path)"
+    - python -c "import confluent_kafka"
 
 about:
   home: https://github.com/confluentinc/confluent-kafka-python
